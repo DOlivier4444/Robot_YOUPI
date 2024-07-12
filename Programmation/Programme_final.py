@@ -45,8 +45,8 @@ def menu_principal(stdscr):
     stdscr.addstr(0, 0, "|===================================================================|")
     stdscr.addstr(1, 0, "|                        MENU PRINCIPAL                             |")
     stdscr.addstr(2, 0, "|                                                                   |")
-    stdscr.addstr(3, 0, "|   Avec le pavé numérique, choisissez le mode de contrôle :        |")
-    stdscr.addstr(4, 0, "|   F1 : Mode manuel et mise en position initial                    |")
+    stdscr.addstr(3, 0, "|   Avec les touches Fn, choisir le menu souhaité :                 |")
+    stdscr.addstr(4, 0, "|   F1 : Mode manuel et prise de la position initial                |")
     stdscr.addstr(5, 0, "|   F2 : Choix du programme                                         |")
     stdscr.addstr(6, 0, "|                                                                   |")
     stdscr.addstr(7, 0, "|   Q : quitter le programme                                        |")
@@ -58,12 +58,14 @@ def menu_choix_programme(stdscr):
     stdscr.addstr(0, 0, "|===================================================================|")
     stdscr.addstr(1, 0, "|                       CHOIX DU PROGRAMME                          |")
     stdscr.addstr(2, 0, "|                                                                   |")
-    stdscr.addstr(3, 0, "|   Avec les touches Fx, choisissez le programme à executer :       |")
-    stdscr.addstr(4, 0, "|   F1 : Test des moteurs (veuillez être en position initiale)      |")
-    stdscr.addstr(5, 0, "|   F2 : let's dance ! (non_programmé)                              |")
-    stdscr.addstr(6, 0, "|                                                                   |")
-    stdscr.addstr(7, 0, "|   ESCAPE : Retour au menu précédent                               |")
-    stdscr.addstr(8, 0, "|===================================================================|")
+    stdscr.addstr(3, 0, "|   Avoir fait la position initial avant d'executer un programme !  |")
+    stdscr.addstr(4, 0, "|                                                                   |")
+    stdscr.addstr(5, 0, "|   Avec les touches Fx, choisir le programme à executer :          |")
+    stdscr.addstr(6, 0, "|   F1 : Test des moteurs (veuillez être en position initiale)      |")
+    stdscr.addstr(7, 0, "|   F2 : let's dance ! (non_programmé)                              |")
+    stdscr.addstr(8, 0, "|                                                                   |")
+    stdscr.addstr(9, 0, "|   ESCAPE : Retour au menu précédent                               |")
+    stdscr.addstr(10, 0, "|===================================================================|")
     stdscr.refresh()
 
 def menu_mode_manuel(stdscr):
@@ -72,22 +74,27 @@ def menu_mode_manuel(stdscr):
     stdscr.addstr(1, 0, "|                           MODE MANUEL                             |")
     stdscr.addstr(2, 0, "|                                                                   |")
     stdscr.addstr(3, 0, "|     F9 (Négatif) et F12 (Positif) servent à contrôler Le sens     |")
-    stdscr.addstr(4, 0, "|     de rotation, Les touches F1 à F6 correspondent aux moteurs.   |")
+    stdscr.addstr(4, 0, "|    de rotation, Les touches F1 à F6 correspondent aux moteurs.    |")
     stdscr.addstr(5, 0, "|                                                                   |")
-    stdscr.addstr(6, 0, "|  REMISE EN POSITION INITIAL : La touche ENTREE effectue un RAZ    |")
-    stdscr.addstr(7, 0, "|         de la valeur du codeur du dernier moteur utilisé,         |")
+    stdscr.addstr(6, 0, "|      REMISE EN POSITION INITIAL : La touche ENTREE effectue       |")
+    stdscr.addstr(7, 0, "|     un RAZ de la valeur du codeur du dernier moteur utilisé.      |")
     stdscr.addstr(8, 0, "|                                                                   |")
-    stdscr.addstr(9, 0, "|   /!\ Rien n'arrêtera le robot, veuillez être précautionneux /!\  |")
-    stdscr.addstr(10, 0, "|                                                                   |")
-    stdscr.addstr(11, 0, "|   F1 : base           | Valeur du codeur : {}                      |".format(Codeur_moteur1))
-    stdscr.addstr(12, 0, "|   F2 : epaule         | Valeur du codeur : {}                      |".format(Codeur_moteur2))
-    stdscr.addstr(13, 0, "|   F3 : coude          | Valeur du codeur : {}                      |".format(Codeur_moteur3))
-    stdscr.addstr(14, 0, "|   F4 : poignet        | Valeur du codeur : {}                      |".format(Codeur_moteur4))
-    stdscr.addstr(15, 0, "|   F5 : rotation main  | Valeur du codeur : {}                      |".format(Codeur_moteur5))
-    stdscr.addstr(16, 0, "|   F6 : pince          | Valeur du codeur : {}                      |".format(Codeur_moteur6))
-    stdscr.addstr(17, 0, "|                                                                   |")
-    stdscr.addstr(18, 0, "|   ESCAPE : Retour au menu précédent                               |")
-    stdscr.addstr(19, 0, "|===================================================================|")
+    stdscr.addstr(9, 0, "|       MAJ gauche, CAPS LOCK et TAB servent respectivement à       |")
+    stdscr.addstr(10, 0, "|    regler la petite, moyenne et grande vitesse du mode manuel.    |")
+    stdscr.addstr(11, 0, "|                                                                   |")
+    stdscr.addstr(11, 0, "|                                                                   |")
+    stdscr.addstr(12, 0, "|  /!\Barre espace pour l'arrêt d'urgence(pas encore programmé)/!\  |")
+    stdscr.addstr(13, 0, "|                                                                   |")
+    stdscr.addstr(11, 0, "|                                                                   |")
+    stdscr.addstr(14, 0, "|   F1 : base           | Valeur du codeur : {}                      |".format(Codeur_moteur1))
+    stdscr.addstr(15, 0, "|   F2 : epaule         | Valeur du codeur : {}                      |".format(Codeur_moteur2))
+    stdscr.addstr(16, 0, "|   F3 : coude          | Valeur du codeur : {}                      |".format(Codeur_moteur3))
+    stdscr.addstr(17, 0, "|   F4 : poignet        | Valeur du codeur : {}                      |".format(Codeur_moteur4))
+    stdscr.addstr(18, 0, "|   F5 : rotation main  | Valeur du codeur : {}                      |".format(Codeur_moteur5))
+    stdscr.addstr(19, 0, "|   F6 : pince          | Valeur du codeur : {}                      |".format(Codeur_moteur6))
+    stdscr.addstr(20, 0, "|                                                                   |")
+    stdscr.addstr(21, 0, "|   ESCAPE : Retour au menu précédent                               |")
+    stdscr.addstr(22, 0, "|===================================================================|")
     stdscr.refresh()
 
 
@@ -203,7 +210,8 @@ Codeur_moteur6 = 0
 moteurX = 0
 sens_rotation = 0
 
-#def variables():
+
+#def variables() :
 #	Menu
 #	Menu_affiché
 #	Mode_manuel
@@ -219,7 +227,7 @@ sens_rotation = 0
 #	Codeur_moteur6
 #	moteurX
 #	sens_rotation
-
+    
 #===============================================================================================================================================================#
 #																																								#
 #																		Robot youpi	- Olivier DANIEL															#
