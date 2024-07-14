@@ -1,12 +1,12 @@
 
 
-#===============================================================================================#
-#																								#
-#										Robot youpi	- Olivier DANIEL							#
-#																								#
-#										0) DEFINITION DES VARIABLES								#
-#																								#
-#===============================================================================================#
+#===============================================================================#
+#                                                                               #
+#                            Robot youpi - Olivier DANIEL                       #
+#                                                                               #
+#                            0) DEFINITION DES VARIABLES                        #
+#                                                                               #
+#===============================================================================#
 
 
 # 0.1) chargement des modules
@@ -81,6 +81,8 @@ def menu_mode_manuel(stdscr):
     stdscr.addstr(8, 0, "|                                                                   |")
     stdscr.addstr(9, 0, "|       MAJ gauche, CAPS LOCK et TAB servent respectivement à       |")
     stdscr.addstr(10, 0, "|    regler la petite, moyenne et grande vitesse du mode manuel.    |")
+    stdscr.addstr(11, 0, "|                                                                   |")
+    stdscr.addstr(11, 0, "|                                                                   |")
     stdscr.addstr(11, 0, "|                                                                   |")
     stdscr.addstr(11, 0, "|                                                                   |")
     stdscr.addstr(12, 0, "|  /!\Barre espace pour l'arrêt d'urgence(pas encore programmé)/!\  |")
@@ -209,6 +211,7 @@ Codeur_moteur5 = 0
 Codeur_moteur6 = 0
 moteurX = 0
 sens_rotation = 0
+vitesse_manu = 1
 
 
 #def variables() :
@@ -229,11 +232,11 @@ sens_rotation = 0
 #	sens_rotation
     
 #===============================================================================================================================================================#
-#																																								#
-#																		Robot youpi	- Olivier DANIEL															#
-#																																								#
-#																		PROGRAMME PRINCIPAL																		#
-#																																								#
+#                                                                                                                                                               #
+#                                                                       Robot youpi - Olivier DANIEL                                                            #
+#                                                                                                                                                               #
+#                                                                       PROGRAMME PRINCIPAL                                                                     #
+#                                                                                                                                                               #
 #===============================================================================================================================================================#
 
 
@@ -246,12 +249,13 @@ byte.value = (0,0,0,0,0,0,0,0)
 print("initialisation en cours, byte = 0")
 sleep(0.2)
 
+
 #===============================================================================#
-#																				#
-#								Robot youpi	- Olivier DANIEL					#
-#																				#
-#								1) GESTION DES MENUES ET PROGRAMMES				#
-#																				#
+#                                                                               #
+#                            Robot youpi - Olivier DANIEL                       #
+#                                                                               #
+#                            1) GESTION DES MENUES ET PROGRAMMES                #
+#                                                                               #
 #===============================================================================#
 
 
@@ -260,7 +264,7 @@ def main(stdscr): # ---> le fait que ça soit définit ralentis peut-être le pr
 	stdscr.nodelay(True)                # éntrées non blocantes
 	stdscr.timeout(100)                 # Timeout de 100ms pour getch()
 #	global variables
-	global Mode_manuel, Test_moteurs, Menu, Codeur_moteur1, Codeur_moteur2, Codeur_moteur3, Codeur_moteur4, Codeur_moteur5, Codeur_moteur6, moteurX, sens_rotation, Menu_affiché, Dance_robot, Choix_dance
+	global Mode_manuel, Test_moteurs, Menu, Codeur_moteur1, Codeur_moteur2, Codeur_moteur3, Codeur_moteur4, Codeur_moteur5, Codeur_moteur6, moteurX, sens_rotation, vitesse_manu, Menu_affiché, Dance_robot, Choix_dance
 	stdscr.clear()
 	key = stdscr.getch()
 
@@ -305,16 +309,15 @@ def main(stdscr): # ---> le fait que ça soit définit ralentis peut-être le pr
 
 
 #===============================================================================#
-#																				#
-#								Robot youpi	- Olivier DANIEL					#
-#																				#
-#								2) CONTROLE MANUEL								#
-#																				#
+#                                                                               #
+#                            Robot youpi - Olivier DANIEL                       #
+#                                                                               #
+#                            2) CONTROLE MANUEL                                 #
+#                                                                               #
 #===============================================================================#
 
 
 		while Mode_manuel == 1:               #--> remplacer par if pour que l'ATU fonctionne ?
-			vitesse_manu = 200
 			stdscr.refresh()
 			menu_mode_manuel(stdscr)
 			key = stdscr.getch()
@@ -323,51 +326,105 @@ def main(stdscr): # ---> le fait que ça soit définit ralentis peut-être le pr
 				Menu = 1
 				Mode_manuel = 0
 
+			elif key == 48: #Chiffre 0
+				vitesse_manu = 1      # vitesse basse
+			elif key == 50: #Chiffre 2
+				vitesse_manu = 200      # vitesse moyenne
+			elif key == 53: #Chiffre 5
+				vitesse_manu = 400      # vitesse haute
+			elif key == 56: #Chiffre 8
+				vitesse_manu = 800      # vitesse maximal (pour le moment)
+
 			elif key == 10:	#Touche ENTER
 				globals()[f'Codeur_moteur{moteurX}'] = 0
 				print(moteurX)
 
-			elif key == curses.KEY_F12:
+			elif key == curses.KEY_F12: # sens positif
 				sens_rotation_0()
-			elif key == curses.KEY_F9:
+			elif key == curses.KEY_F9: # sens négatif
 				sens_rotation_1()
 
 			elif key == curses.KEY_F1:
-				moteur_1()
+				for f1 in range (vitesse_manu): 
+					moteur_1()
+# données encore inconnus --> décrassage nécessaire
+#340° de liberté - résolution (mode demi-pas) : 0.04°
+
 			elif key == curses.KEY_F2:
-				moteur_2()
-
-		#	while key == curses.KEY_F2:
-		#		for f2 in range (200):
-		#			moteur_2()
-		#			key = stdscr.getch()  # Vérifie si la touche est toujours enfoncée
-
-		#	elif key == curses.KEY_F2:
-		#		for f2 in range (vitesse_manu):
-		#			moteur_2()
-		#			key = stdscr.getch() # Vérifie si la touche est toujours enfoncée
-		#	#		if key != curses.KEY_F2:
-		#	#			f2 = vitesse_manu
+				for f2 in range (vitesse_manu):
+					moteur_2()
+#6900 pas de débattement - Pour être droit : Se mettre en butée avant puis +4500 pas
+#240° de liberté - résolution (mode demi-pas) : 0.03°
 
 			elif key == curses.KEY_F3:
-				moteur_3()
-			elif key == curses.KEY_F4:
-				moteur_4()
-			elif key == curses.KEY_F5:
-				moteur_5()
-			elif key == curses.KEY_F6:
-				moteur_6()
+				for f3 in range (vitesse_manu): 
+					moteur_3()
+#7700 pas de débattement  - Pour être droit : Se mettre en butée arrière puis +3200 pas
+#220° de liberté - résolution (mode demi-pas) : 0.03°
 
+			elif key == curses.KEY_F4:
+				for f4 in range (vitesse_manu): 
+					moteur_4() 
+#6500 pas de débattement (faux ?) --> Le 0 pris en position verticale, le débattement se fait de 4000 à -4000 --> pince à 90° partant du 0 : 3200 pas
+#l'axe 5 tourne en même temps (Mécaniquement logique), 
+# ordonner les deux moteurs (4+5 pour garder la pince droite car 6400 pas = 1 tour de pince et 6400 pas = une rotation 180° main)
+#220° de liberté - résolution (mode demi-pas) : 0.03°
+
+			elif key == curses.KEY_F5:
+				for f5 in range (vitesse_manu):
+					moteur_5()
+#12800 pas = 360° de la pince - rotation illimité
+#degré de liberté infini - résolution (mode demi-pas) : 0.03°
+
+			elif key == curses.KEY_F6:
+				for f6 in range (vitesse_manu):
+					moteur_6()
+#6000 pas de débattement
+
+
+
+
+
+			#elif key == curses.KEY_F2 : # and (sens_rotation == 0 and vitesse_manu <= Codeur_moteur2):
+			#	if sens_rotation == 0:
+			#		Pos_cible = Codeur_moteur2 + vitesse_manu
+			#	elif sens_rotation == 1:
+			#		Pos_cible = Codeur_moteur2 - vitesse_manu
+			#	elif Pos_cible > 0 and Pos_cible < 6700 :
+			#		for f2 in range (vitesse_manu): #6700 pas de limite - /2=3350
+			#			moteur_2()
+			#	else :
+			#		stdscr.addstr(15, 0, "|   F2 : epaule         | HORS LIMITE ! HORS LIMITE ! HORS LIMITE !  |")
+
+
+
+
+
+			#elif key == curses.KEY_F2:
+			#	for f2 in range (vitesse_manu):
+			#		moteur_2()
+			#
+			#while key == curses.KEY_F2:
+			#	for f2 in range (200):
+			#		moteur_2()
+			#		key = stdscr.getch()  # Vérifie si la touche est toujours enfoncée
+			#
+			#elif key == curses.KEY_F2:
+			#	for f2 in range (vitesse_manu):
+			#		moteur_2()
+			#		key = stdscr.getch() # Vérifie si la touche est toujours enfoncée
+			#		if key != curses.KEY_F2:
+			#			f2 = vitesse_manu
 
 					#curses.wrapper(main)
 
 
 #===============================================================================#
-#																				#
-#								Robot youpi	- Olivier DANIEL					#
-#																				#
-#								3) TEST DES MOTEURS								#
-#																				#
+#                                                                               #
+#                            Robot youpi - Olivier DANIEL                       #
+#                                                                               #
+#                            3) TEST DES MOTEURS                                #
+#                                                                               #
 #===============================================================================#
 
 
@@ -405,11 +462,11 @@ def main(stdscr): # ---> le fait que ça soit définit ralentis peut-être le pr
 
 
 #===============================================================================#
-#																				#
-#								Robot youpi	- Olivier DANIEL					#
-#																				#
-#								Dance du robot									#
-#																				#
+#                                                                               #
+#                            Robot youpi - Olivier DANIEL                       #
+#                                                                               #
+#                            4) Dance du robot                                  #
+#                                                                               #
 #===============================================================================#
 
 
@@ -424,11 +481,11 @@ def main(stdscr): # ---> le fait que ça soit définit ralentis peut-être le pr
 			
 
 #===============================================================================#
-#																				#
-#								Robot youpi	- Olivier DANIEL					#
-#																				#
-#								Système d'arrêt d'urgence						#
-#																				#
+#                                                                               #
+#                            Robot youpi - Olivier DANIEL                       #
+#                                                                               #
+#                            Système d'arrêt d'urgence                          #
+#                                                                               #
 #===============================================================================#
 
 
