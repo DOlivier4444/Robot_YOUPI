@@ -38,6 +38,16 @@ LEDBoard("GPIO21") # bit0 = moteur1__base            = D0 = .....,0,0,0
 byte = LEDBoard("GPIO18","GPIO23","GPIO24","GPIO25","GPIO12","GPIO16","GPIO20","GPIO21")
 
 
+# Signal RESET afin d'initialiser les phases du moteur --> 16#47 donc 2#01000111 suivi de 16#0---> Voir "Documentation général.pdf"
+
+byte.value = (0,1,0,0,0,1,1,1)
+print("initialisation en cours, byte = 47")
+sleep(0.05)
+byte.value = (0,0,0,0,0,0,0,0)
+print("initialisation en cours, byte = 0")
+sleep(0.05)
+
+
 # 0.4) Définition des menues
 
 def menu_principal(stdscr):
@@ -73,13 +83,13 @@ def menu_mode_manuel(stdscr):
     stdscr.addstr(0, 0, "|===================================================================|")
     stdscr.addstr(1, 0, "|                           MODE MANUEL                             |")
     stdscr.addstr(2, 0, "|                                                                   |")
-    stdscr.addstr(3, 0, "|     F9 (Négatif) et F12 (Positif) servent à contrôler Le sens     |")
-    stdscr.addstr(4, 0, "|    de rotation, Les touches F1 à F6 correspondent aux moteurs.    |")
+    stdscr.addstr(3, 0, "|      N (Négatif) et P (Positif) servent à contrôler Le sens       |")
+    stdscr.addstr(4, 0, "|     de rotation, Les touches 1 à 6 correspondent aux moteurs.     |")
     stdscr.addstr(5, 0, "|                                                                   |")
     stdscr.addstr(6, 0, "|      REMISE EN POSITION INITIAL : La touche ENTREE effectue       |")
     stdscr.addstr(7, 0, "|     un RAZ de la valeur du codeur du dernier moteur utilisé.      |")
     stdscr.addstr(8, 0, "|                                                                   |")
-    stdscr.addstr(9, 0, "|          0, 2, 5, 8 servent respectivement à regler la            |")
+    stdscr.addstr(9, 0, "|          7, 8, 9, 0 servent respectivement à regler la            |")
     stdscr.addstr(10, 0, "|  très petite, petite, moyenne et grande vitesse du mode manuel.   |")
     stdscr.addstr(11, 0, "|                                                                   |")
     stdscr.addstr(12, 0, "|   Vitesse : {}                                                    |".format(vitesse_manu))
@@ -88,12 +98,12 @@ def menu_mode_manuel(stdscr):
     stdscr.addstr(15, 0, "|  /!\Barre espace pour l'arrêt d'urgence(pas encore programmé)/!\  |")
     stdscr.addstr(16, 0, "|                                                                   |")
     stdscr.addstr(17, 0, "|                                                                   |")
-    stdscr.addstr(18, 0, "|   F1 : base           | Valeur du codeur : {}                      |".format(Codeur_moteur1))
-    stdscr.addstr(19, 0, "|   F2 : epaule         | Valeur du codeur : {}                      |".format(Codeur_moteur2))
-    stdscr.addstr(20, 0, "|   F3 : coude          | Valeur du codeur : {}                      |".format(Codeur_moteur3))
-    stdscr.addstr(21, 0, "|   F4 : poignet        | Valeur du codeur : {}                      |".format(Codeur_moteur4))
-    stdscr.addstr(22, 0, "|   F5 : rotation main  | Valeur du codeur : {}                      |".format(Codeur_moteur5))
-    stdscr.addstr(23, 0, "|   F6 : pince          | Valeur du codeur : {}                      |".format(Codeur_moteur6))
+    stdscr.addstr(18, 0, "|   1 : base           | Valeur du codeur : {}                       |".format(Codeur_moteur1))
+    stdscr.addstr(19, 0, "|   2 : epaule         | Valeur du codeur : {}                       |".format(Codeur_moteur2))
+    stdscr.addstr(20, 0, "|   3 : coude          | Valeur du codeur : {}                       |".format(Codeur_moteur3))
+    stdscr.addstr(21, 0, "|   4 : poignet        | Valeur du codeur : {}                       |".format(Codeur_moteur4))
+    stdscr.addstr(22, 0, "|   5 : rotation main  | Valeur du codeur : {}                       |".format(Codeur_moteur5))
+    stdscr.addstr(23, 0, "|   6 : pince          | Valeur du codeur : {}                       |".format(Codeur_moteur6))
     stdscr.addstr(24, 0, "|                                                                   |")
     stdscr.addstr(25, 0, "|   ESCAPE : Retour au menu précédent                               |")
     stdscr.addstr(26, 0, "|===================================================================|")
@@ -239,10 +249,10 @@ def moteur_6() : #pince
 		moteurX = 6
 
 	global sens_rotation, Codeur_moteur6
-	if (sens_rotation == 1) and (Codeur_moteur6 <= 0-1):
+	if (sens_rotation == 1) and (Codeur_moteur6 <= 0):
 		rotation_moteur_6()
 		Codeur_moteur6 += 1
-	if (sens_rotation == 0) and (Codeur_moteur6 >= -6000+1):
+	if (sens_rotation == 0) and (Codeur_moteur6 >= -6000):
 		rotation_moteur_6()
 		Codeur_moteur6 -= 1
 
@@ -250,10 +260,10 @@ def moteur_6() : #pince
 # 0.7) Variables
 
 Menu = 1
-Menu_affiché = 0
-Mode_manuel = 0
-Test_moteurs = 0
-Dance_robot = 0
+Menu_affiché = False
+Mode_manuel = False
+Test_moteurs = False
+Dance_robot = False
 Choix_dance = 0
 
 moteurX = 0
@@ -275,16 +285,6 @@ vitesse_manu = 1
 #                                                                       PROGRAMME PRINCIPAL                                                                     #
 #                                                                                                                                                               #
 #===============================================================================================================================================================#
-
-
-# Signal RESET afin d'initialiser les phases du moteur --> 16#47 donc 2#01000111 suivi de 16#0---> Voir "Documentation général.pdf"
-
-byte.value = (0,1,0,0,0,1,1,1)
-print("initialisation en cours, byte = 47")
-sleep(0.2)
-byte.value = (0,0,0,0,0,0,0,0)
-print("initialisation en cours, byte = 0")
-sleep(0.2)
 
 
 #===============================================================================#
@@ -314,37 +314,37 @@ def main(stdscr): # ---> le fait que ça soit définit ralentis peut-être le pr
 			key = stdscr.getch()			# Capturer la touche appuyée
 			if key == ord('q') or key == ord('Q'):
 				break
-			elif Menu_affiché == 0:
+			elif Menu_affiché == False:
 				menu_principal(stdscr)
 				stdscr.refresh()
-				Menu_affiché = 1
+				Menu_affiché = True #Input() --> affichage menu 1 seule fois
 
 			elif key == curses.KEY_F1:		# Mode manuel
-				Mode_manuel = 1
-				Menu_affiché = 0
+				Mode_manuel = True
+				Menu_affiché = False
 				Menu = 0
 			elif key == curses.KEY_F2:		# Choix du programme
-				Menu_affiché = 0
+				Menu_affiché = False
 				Menu = 2
 
 		elif Menu == 2:
 			key = stdscr.getch()
 			if key == 27:					# ESCAPE - retour au menu principal
-				Menu_affiché = 0
+				Menu_affiché = False
 				Menu = 1
-			elif Menu_affiché == 0:
+			elif Menu_affiché == False:
 				menu_choix_programme(stdscr)
 				stdscr.refresh()
-				Menu_affiché = 1
+				Menu_affiché = True
 
 
 			elif key == curses.KEY_F1:		#Test des moteurs
-				Test_moteurs = 1
-				Menu_affiché = 0
+				Test_moteurs = True
+				Menu_affiché = False
 				Menu = 0
 			elif key == curses.KEY_F2:		# Dance des robot
-				Dance_robot = 1
-				Menu_affiché = 0
+				Dance_robot = True
+				Menu_affiché = False
 				Menu = 0
 
 
@@ -357,67 +357,58 @@ def main(stdscr): # ---> le fait que ça soit définit ralentis peut-être le pr
 #===============================================================================#
 
 
-		while Mode_manuel == 1:               #--> remplacer par if pour que l'ATU fonctionne ?
+		while Mode_manuel == True:               #--> remplacer par if pour que l'ATU fonctionne ?
 			stdscr.refresh()
 			menu_mode_manuel(stdscr)
 			key = stdscr.getch()
+			if 100000 <= vitesse_manu <=0: #Empèchement d'une vitesse négative ou trop importante
+				vitesse_manu =1
+			match key:
+			#0 == 48
+			#1 == 49
+			#....
+			#p == 112
+			#n == 110
+				case 27:  # Touche ESC
+					Menu = 1
+					Mode_manuel = False
+			#elif key == 48: #Chiffre 0
+			#	vitesse_manu = input()
 
-			if key == 27:  # Touche ESC
-				Menu = 1
-				Mode_manuel = 0
+				case 10:	#Touche ENTER
+					globals()[f'Codeur_moteur{moteurX}'] = 0
+				case 112: # sens positif
+					sens_rotation_1()
+				case 110: # sens négatif
+					sens_rotation_0()
 
-			elif key == 48: #Chiffre 0
-				vitesse_manu = 1      # vitesse basse
-			elif key == 50: #Chiffre 2
-				vitesse_manu = 200      # vitesse moyenne
-			elif key == 53: #Chiffre 5
-				vitesse_manu = 400      # vitesse haute
-			elif key == 56: #Chiffre 8
-				vitesse_manu = 800      # vitesse maximal (pour le moment)
-
-			elif key == 10:	#Touche ENTER
-				globals()[f'Codeur_moteur{moteurX}'] = 0
-
-			elif key == curses.KEY_F12: # sens positif
-				sens_rotation_1()
-			elif key == curses.KEY_F9: # sens négatif
-				sens_rotation_0()
-
-			elif key == curses.KEY_F1:
-				for f1 in range (vitesse_manu):
-					moteur_1()
-			elif key == curses.KEY_F2:
-				for f2 in range (vitesse_manu):
-					moteur_2()
-			elif key == curses.KEY_F3:
-				for f3 in range (vitesse_manu):
-					moteur_3()
-			elif key == curses.KEY_F4:
-				for f4 in range (vitesse_manu):
-					moteur_4() 
-			elif key == curses.KEY_F5:
-				for f5 in range (vitesse_manu):
-					moteur_5()
-			elif key == curses.KEY_F6:
-				for f6 in range (vitesse_manu):
-					moteur_6()
-
-
-
-
-
-			#elif key == curses.KEY_F2 : # and (sens_rotation == 1 and vitesse_manu <= Codeur_moteur2):
-			#	if sens_rotation == 1:
-			#		Pos_cible = Codeur_moteur2 + vitesse_manu
-			#	elif sens_rotation == 0:
-			#		Pos_cible = Codeur_moteur2 - vitesse_manu
-			#	elif Pos_cible > 0 and Pos_cible < 6700 :
-			#		for f2 in range (vitesse_manu): #6700 pas de limite - /2=3350
-			#			moteur_2()
-			#	else :
-			#		stdscr.addstr(15, 0, "|   F2 : epaule         | HORS LIMITE ! HORS LIMITE ! HORS LIMITE !  |")
-
-
+				case 49: # 1
+					for f1 in range (vitesse_manu):
+						moteur_1()
+				case 50: # 2
+					for f2 in range (vitesse_manu):
+						moteur_2()
+				case 51: # 3
+					for f3 in range (vitesse_manu):
+						moteur_3()
+				case 52: # 4
+					for f4 in range (vitesse_manu):
+						moteur_4()
+				case 53: # 5
+					for f5 in range (vitesse_manu):
+						moteur_5()
+				case 54: # 6
+					for f6 in range (vitesse_manu):
+						moteur_6()
+	
+				case 55: # 7
+					vitesse_manu = 1      # vitesse basse
+				case 56: # 8
+					vitesse_manu = 200      # vitesse moyenne
+				case 57: # 9
+					vitesse_manu = 400      # vitesse haute
+				case 48: # 0
+					vitesse_manu = 800      # vitesse maximal (pour le moment)
 
 
 
@@ -449,7 +440,7 @@ def main(stdscr): # ---> le fait que ça soit définit ralentis peut-être le pr
 #===============================================================================#
 
 
-		while Test_moteurs == 1:
+		while Test_moteurs == True:
 			Nombre_de_pas_rotation_moteur = 400 # 200 pas = 1 tour moteur
 			stdscr.clear()
 			for i in range(1, 7):
@@ -479,7 +470,7 @@ def main(stdscr): # ---> le fait que ça soit définit ralentis peut-être le pr
 			stdscr.refresh()
 			sleep(3)
 			Menu = 2
-			Test_moteurs = 0
+			Test_moteurs = False
 
 
 #===============================================================================#
@@ -491,14 +482,26 @@ def main(stdscr): # ---> le fait que ça soit définit ralentis peut-être le pr
 #===============================================================================#
 
 
-		while Dance_robot == 1:
+		while Dance_robot == True:
 			stdscr.clear()
-			stdscr.addstr(2, 0,  "Pas encore programmé, retour au menu précédent...\n") # --
+			stdscr.addstr(2, 0,  "Programmation en cours, encore en test, début du programme...")
 			stdscr.refresh()
-			sleep(2)
+			sleep(1)
+			for x in range (200):
+				sens_rotation_1()
+				moteur_2()
+				sens_rotation_0
+				moteur_3()
+
+				sens_rotation_0()
+				moteur_2()
+				sens_rotation_1
+				moteur_3()
+			stdscr.addstr(4, 0,  "Fin du programme, retour au menu précédent")
+			sleep(1)
 			Menu = 2
-			Dance_robot = 0
-			Menu_affiché = 0
+			Dance_robot = False
+			Menu_affiché = False
 			
 
 #===============================================================================#
@@ -511,8 +514,8 @@ def main(stdscr): # ---> le fait que ça soit définit ralentis peut-être le pr
 
 
 #	while key == 32:
-#		Mode_manuel = 0
-#		Test_moteurs = 0
+#		Mode_manuel = False
+#		Test_moteurs = False
 #		stdscr.clear()
 #		stdscr.addstr(2, 0, "ARRET D'URGENCE !")
 #		stdscr.addstr(4, 0, "Arret des mouvements...")
