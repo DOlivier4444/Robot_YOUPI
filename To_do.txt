@@ -1,7 +1,0 @@
-- nettoyer et réinstaller le transfo
-- prises de façade :
-	- RJ45 raspberry
-	- Prises USB raspberry (manette / pavé numérique / liaison_série)
-	- Prise USB Arduino (prog ou liaison_série)
-	- 
-- 
