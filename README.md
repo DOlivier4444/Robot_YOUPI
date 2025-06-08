@@ -1,25 +1,46 @@
-# Robot-YOUPI
-** Work in progress ... **
+# <ins>**Robot-YOUPI**</ins>
+**Work in progress ...**
 
 code, research, documents, and notes about this project
 
 
 
-## What is YOUPI robot
+## <ins>What is the robot-YOUPI</ins>
 ..
 
-## Context
+## <ins>Context of the project</ins>
 ..
 
-## Hardware and wiring
-# Robot
+# <ins>**HARDWARE AND WIRING**</ins>
+## <ins>Robot</ins>
 ..
 
-# Arduino
+## <ins>Arduino</ins>
 ..
 
-# Raspberry pi
+## <ins>Raspberry pi</ins>
 ..
 
-## What's left to do
-- finish this page
+
+# <ins>**What's left to do**</ins>
+## <ins>Software</ins>
+
+### Important
+- Send the number of movement (received as joint movements) to do to the arduino
+- Execute the movement on the arduino (nothing crasy, just a while loop...)
+- send a message 'ready to receive movement' --> handshake communication
+
+- <ins>finish this page + wiki ?</ins>
+
+### Later
+- Decode the IR codes from the LED remote + test to send the codes from the arduino (control the LED strip)
+- UI
+  - ..
+- Command via controller // numerical keyboard
+
+## <ins>Hardware</ins>
+- clean & reinstall the transformator
+- facing plug :
+  - RJ45 raspberry
+  - USB raspberry (controller, numerical keyboard, serial connexion)
+  - USB arduino (prog or serial connexion)

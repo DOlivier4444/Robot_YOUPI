@@ -1,19 +1,3 @@
-# Reste a faire : 
-#   ----------- important -----------
-# Tout basculer sur le raspberry 
-# --> arduino ne recevant que les angles moteurs soiuhaité 
-# --> vérification angles sur le raspberry + inverse kinematic
-# 
-#
-# - envoie du nbr de mouvements à faire --> indice de boucle for(...){robots_program} ---> fait dans Program_Execution() --> réflechir à la refonte du protocole d'échange de données + ordre des échanges sur feuille blanche
-# - envoie 'raspberry prêt' en boucle j'usqu'à message 'arduino ready !'
-#
-#   ----------- Secondaire -----------
-# - décodage des codes reçu IR de la telecommande pour les LED + tester d'envoyer des codes via arduino (changer les leds)
-# - UI utilisateur
-# - Commande via manette // Clavier numérique
-
-
 from enum import Enum
 import os
 import serial #type:ignore
