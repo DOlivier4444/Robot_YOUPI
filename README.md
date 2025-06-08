@@ -1,2 +1,25 @@
 # Robot-YOUPI
-Mon code effectué en python et executé sur un raspberry pi 3 B+ ainsi que mes documents, recherches, et notes personnel de ce projet
+** Work in progress ... **
+
+code, research, documents, and notes about this project
+
+
+
+## What is YOUPI robot
+..
+
+## Context
+..
+
+## Hardware and wiring
+# Robot
+..
+
+# Arduino
+..
+
+# Raspberry pi
+..
+
+## What's left to do
+- finish this page

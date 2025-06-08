@@ -1,0 +1,23 @@
+https://forum.arduino.cc/t/robot-youpi-une-antiquite/170847/30 :
+
+J'ai noté les circuit intégré de la carte :
+Commande puissance :
+L297 : il me semblait bien
+4011 : je penses que c'est la logique de comande du pont en H ou non?
+LM2903 : Comparateur x 2, peut être pour la mesure du courant .... Pas sur, mais relié à un shunt de 0,2 ohm.
+C3272 : transistors bipolaire pour le pont
+
+Logique de commande de l'ensemble :
+74LS244, suiveur bufferisé
+74LS373, octuple bascule D
+74LS138, décodeur/multiplexeur
+
+Logique de transfert des valeur des capteur :
+74HC151, je crois. Cest un multiplexeur
+LM2901 : comparateur x4
+LM2903 : comparateur x2
+
+Voilà pour les circuits intégré.
+
+-------------
+

@@ -1,0 +1,36 @@
+----------------------------------credentials-------------------------------------
+RPI CREDENTIALS :
+	Id : YOUPI
+	PW : YOUPI56620
+
+Hotspot :
+	SSID : ROBOT-YOUPI
+	PW : YOUPI56620
+	IP : 10.42.0.1
+
+ETH (static):
+	IP : 192.168.0.70
+
+Samba :
+	ID : robot_youpi
+	PW : YOUPI56620
+
+
+-----------------auto mount samba file --------------------
+in /etc/fstab add:
+//192.168.0.69/Partage_Samba/Olivier/Robot_youpi       /home/Olivier/Desktop/share cifs   credentials=/etc/samba/credentials/myserver 0 0
+
+
+in /etc/samba/credentials/myserver/.myserver :
+username=robot_youpi
+password=YOUPI56620
+
+
+chmod 600 ~/.smbcredentials
+
+sudo mount -a
+
+
+---------------- Other ----------------
+
+- Setup the hotspot with above credentials
