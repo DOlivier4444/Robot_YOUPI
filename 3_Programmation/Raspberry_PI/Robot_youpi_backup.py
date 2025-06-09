@@ -360,10 +360,10 @@ def Get_Movement_Datas(workSheets:openpyxl.worksheet.worksheet.Worksheet, row_no
   match movementMode :
     case Youpi.Movement_Mode.JOINT.value :
       startColumn = 11
-      nbrOfData   = 5
+      nbrOfData   = 6
     case Youpi.Movement_Mode.LINEAR.value :
-      startColumn = 4
-      nbrOfData   = 7
+      startColumn = 3
+      nbrOfData   = 8
     case _ :
       print(f"Choix de mouvement erroné - valeur de la ligne {row_no} : mouvementMode = {movementMode}")
       return None # error
@@ -373,15 +373,9 @@ def Get_Movement_Datas(workSheets:openpyxl.worksheet.worksheet.Worksheet, row_no
     print(f"Erreur de lecture de la vitesse du mouvement à la ligne {row_no} : speed = {speed}")
     return None
   
-  gripperPercentage = Read_cell_value(workSheets, row_no, column=3)
-  if gripperPercentage is None :
-    print(f"Erreur de lecture du pourcentage de fermeture de la pince à la ligne {row_no} : gripperPercentage = {gripperPercentage}")
-    return None
-  
   values = []
   values.append(movementMode)
   values.append(speed)
-  values.append(gripperPercentage)
  
   #print(f"start column : {startColumn} \nend column : {startColumn + nbrOfData}")
 
@@ -425,27 +419,23 @@ def Get_Program_Datas(workSheets:openpyxl.worksheet.worksheet.Worksheet) -> list
 
     if mvtDatas[0] == Youpi.Movement_Mode.LINEAR.value :
       motorAnglesTargets = Inverse_Kinematic(
-        DH_params   = Youpi.DH_Params,
-        X           = float(mvtDatas[3]),
-        Y           = float(mvtDatas[4]),
-        Z           = float(mvtDatas[5]),
-        pitch       = float(mvtDatas[6]),
-        roll        = float(mvtDatas[7]),
+        DH_params   = Youpi.DH_Params, 
+        X           = float(mvtDatas[2]), 
+        Y           = float(mvtDatas[3]),
+        Z           = float(mvtDatas[4]),
+        pitch       = float(mvtDatas[5]),
+        roll        = float(mvtDatas[6]),
         penOffsetV  = float(mvtDatas[8]),
         penOffsetH  = float(mvtDatas[9])
       )
-      motorAnglesTargets.append(float(mvtDatas[2])) # add the gripper % to the list
-
+      motorAnglesTargets.append(float(mvtDatas[7])) # add the gripper % to the list
+      
       #print(f"Inverse kinematic angles : {motorAnglesTargets}")
     else : # joint
 
       motorAnglesTargets = mvtDatas.copy()
       motorAnglesTargets.pop(0) # Movement mode
       motorAnglesTargets.pop(0) # Speed
-
-      motorAnglesTargets.pop(0) # Gripper percentage
-      motorAnglesTargets.append(mvtDatas[2]) # move the gripper percentage to the end of the list
-      
       motorAnglesTargets = [float(x) for x in motorAnglesTargets]
 
 
@@ -483,7 +473,7 @@ def Program_Execution(arduino:serial, workSheets:openpyxl.worksheet.worksheet.Wo
 
 
   i = 0
-  while ( i < len(mvtsJointDatas) ) :
+  while ( i <= len(mvtsJointDatas) ) :
 
     while (True) :
       receivedData = Recv_From_Arduino(arduino, direct=False)

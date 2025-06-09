@@ -18,40 +18,22 @@ const int NBR_CHAR = 20;
 const int NBR_LINES = 4;
 LiquidCrystal_I2C lcd(SCREEN_ADRESS, NBR_CHAR, NBR_LINES);  // Setup the LCD display to 20 chars and 4 line
 
-const int DIRECT = true;
-
-// From Raspberry
 typedef enum {
-    FROM_RPI_RASPBERRY_READY,
-    FROM_RPI_MOVEMENT_START,
-    FROM_RPI_ABORT_PROGRAM,
-    FROM_RPI_PROGRAM_FINISHED,
-    FROM_RPI_PROGRAM_EXECUTION,
-    FROM_RPI_MESSAGE_COUNT
-} From_RPI;
-const char* fromRaspberryMessages[FROM_RPI_MESSAGE_COUNT] = {
-    "Raspberry ready!",
-    "Movement start",
-    "Abort program",
-    "Program finished",
-    "Program execution"
-};
+    ARDUINO_READY,
+    RASPBERRY_READY,
+    MOVEMENT_FINISHED,
+    PROGRAM_FINISHED,
+    ERROR_MOVEMENT,
+    MESSAGE_COUNT
+} Message;
 
-// To Raspberry
-typedef enum {
-    TO_RPI_READY_TO_RECEIVE,
-    TO_RPI_ARDUINO_READY,
-    TO_RPI_MOVEMENT_FINISHED,
-    TO_RPI_MESSAGE_COUNT
-} To_RPI;
-const char* toRaspberryMessages[TO_RPI_MESSAGE_COUNT] = {
-    "Ready to receive",
+const char* messageStrings[MESSAGE_COUNT] = {
     "Arduino ready!",
-    "Movement finished"
+    "Raspberry ready!",
+    "Movement finished",
+    "Program finished"
+    "Error movement !"
 };
-
-
-// -----------------------
 
 void initialisation() {
 
@@ -104,7 +86,7 @@ void initialisation() {
       lcd.print("Tentative no ");
       lcd.print(nbrOfTry);
 
-      receivedData = receive_from_rpi(!DIRECT);
+      receivedData = receive_from_rpi();
 
     } else {
       
@@ -112,13 +94,13 @@ void initialisation() {
       lcd.print("Attente de donnees");
 
     }    
-  } while (receivedData != fromRaspberryMessages[FROM_RPI_RASPBERRY_READY]);
+  } while (receivedData != "Raspberry ready !");
 
   lcd_clear_line(3, lcd, NBR_CHAR);
   lcd.setCursor(2,3);
   lcd.print(receivedData);
 
-  send_to_rpi(toRaspberryMessages[TO_RPI_ARDUINO_READY], !DIRECT);
+  send_to_rpi("Arduino ready !");
 
 }
 

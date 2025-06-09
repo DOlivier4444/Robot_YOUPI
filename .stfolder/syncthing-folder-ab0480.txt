@@ -1,0 +1,5 @@
+# This directory is a Syncthing folder marker.
+# Do not delete.
+
+folderID: Robot_YOUPI
+created: 2025-06-09T11:41:44+02:00

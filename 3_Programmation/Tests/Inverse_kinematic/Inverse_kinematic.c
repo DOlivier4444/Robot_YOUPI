@@ -96,12 +96,12 @@ int main() {
 
     /* Inputs */
 
-    double Xd    = 0.0;;
-    double Yd    = 0;
-    double Zd    = 0.754;
+    double Xd    = 0.1;
+    double Yd    = 0.08;
+    double Zd    = 0.05;
 
-    double Pitchd = 0 * PI/180;
-    double Rolld  = PI;
+    double Pitchd = 255 * PI/180;
+    double Rolld  = 0;
 
     /* Function for Inverse Kinematics */
     GoToXYZ(0, 0, Xd, Yd, Zd, Pitchd, Rolld, thetas);

@@ -17,21 +17,22 @@ void setup() {
 
   int etat;
 
-  String receivedData = "";
-
-  do {
-    receivedData = receive_from_rpi(!DIRECT);
-  } while (receivedData != fromRaspberryMessages[FROM_RPI_PROGRAM_EXECUTION]);
 
 
-  if (receivedData == fromRaspberryMessages[FROM_RPI_PROGRAM_EXECUTION]){
-    lcd.setCursor(0,0);
-    lcd.print("Demarrage programme");
-    robots_program(codersMotors, motorAngles);
+  do{
+    etat = robots_program(codersMotors, motorAngles);
+    delay(125);
+  } while (etat == 0x00);
+  lcd.print("Mouvement invalide");
+
+  lcd.setCursor(0,1);
+  lcd.print("code erreur : ");
+  lcd.print(etat);
+
+  lcd.setCursor(0,2);
+  for (int i; i<6; i++) {
+    lcd.print(motorAngles[i]);
   }
-  lcd.setCursor(0,0);
-  lcd.print("Fin programme");
-
 }
 
 void loop() {

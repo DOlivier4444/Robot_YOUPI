@@ -1,5 +1,6 @@
 from math import *
 from enum import Enum
+import math
 
 
 ## Robot's parameters
@@ -72,9 +73,9 @@ def Inverse_Kinematic(DH_params:list, penOffsetV:float, penOffsetH:float, X:floa
   PD = [X, Y, Z]
 
   RotY = [
-    [cos(pitch), 0, sin(pitch)],
+    [math.cos(pitch), 0, math.sin(pitch)],
     [0, 1, 0],
-    [-sin(pitch), 0, cos(pitch)] 
+    [-math.sin(pitch), 0, math.cos(pitch)] 
   ]
 
   Pn = [
@@ -85,8 +86,8 @@ def Inverse_Kinematic(DH_params:list, penOffsetV:float, penOffsetH:float, X:floa
   
   t = atan2(Y, X)
 
-  Pn[0] = PD[0] - Pn[0] * cos(t)
-  Pn[1] = PD[1] - Pn[1] * sin(t)
+  Pn[0] = PD[0] - Pn[0] * math.cos(t)
+  Pn[1] = PD[1] - Pn[1] * math.sin(t)
   Pn[2] = PD[2] - Pn[2]
   
   X = Pn[0]
@@ -98,7 +99,7 @@ def Inverse_Kinematic(DH_params:list, penOffsetV:float, penOffsetH:float, X:floa
   if (abs(Y) < 1e-5 and abs(X) < 1e-5) :
     t1 = 0
   else :
-    t1 = atan2(Y, X)
+    t1 = math.atan2(Y, X)
   
   # This will make the robot to follow actual rotation configuration
   # If removed, then positive means robot end-effector always pointing outside
@@ -107,8 +108,8 @@ def Inverse_Kinematic(DH_params:list, penOffsetV:float, penOffsetH:float, X:floa
     #pitch = SIGN(X) * pitch
     pass
 
-  Rn = sqrt(X * X + Y * Y) - L4 * sin(pitch)
-  Zn = Z - L4 * cos(pitch) - L1
+  Rn = math.sqrt(X * X + Y * Y) - L4 * math.sin(pitch)
+  Zn = Z - L4 * math.cos(pitch) - L1
 
   C3 = (Rn * Rn + Zn * Zn - L2 * L2 - L3 * L3) / (2 * L2 * L3)
   C3 = min(1, max(C3, -1))
@@ -117,16 +118,16 @@ def Inverse_Kinematic(DH_params:list, penOffsetV:float, penOffsetH:float, X:floa
   if (pitch < 0) :
     t3 = -t3
 
-  t2 = atan2(Zn, Rn) - atan2(L3 * sin(t3), L2 + L3 * cos(t3))
+  t2 = math.atan2(Zn, Rn) - math.atan2(L3 * math.sin(t3), L2 + L3 * math.cos(t3))
   t4 = -pitch - t2 - t3 + pi
   t5 = roll
 
 
   # Motor Compatable Angles */
   t1_Motor = t1
-  t2_Motor = t2 - pi/2
+  t2_Motor = t2 - math.pi/2
   t3_Motor = t2_Motor + t3
-  t4_Motor = t3_Motor + t4 - pi/2
+  t4_Motor = t3_Motor + t4 - math.pi/2
   t5_Motor = t5 - t4_Motor
     
   #t1_Motor = -t1_Motor 
@@ -138,11 +139,11 @@ def Inverse_Kinematic(DH_params:list, penOffsetV:float, penOffsetH:float, X:floa
   # Final Angles */
   motorAngles = [0] * 5
 
-  motorAngles[0] = t1_Motor * 180 / pi
-  motorAngles[1] = t2_Motor * 180 / pi
-  motorAngles[2] = t3_Motor * 180 / pi
-  motorAngles[3] = t4_Motor * 180 / pi
-  motorAngles[4] = t5_Motor * 180 / pi
+  motorAngles[0] = round(t1_Motor * 180 / math.pi, 3)
+  motorAngles[1] = round(t2_Motor * 180 / math.pi, 3)
+  motorAngles[2] = round(t3_Motor * 180 / math.pi, 3)
+  motorAngles[3] = round(t4_Motor * 180 / math.pi, 3)
+  motorAngles[4] = round(t5_Motor * 180 / math.pi, 3)
 
   return motorAngles
 
@@ -154,12 +155,12 @@ def main() :
   penOffsetV = 0.0
   penOffsetH = 0.0
 
-  x = 0.0
-  y = 0
-  z = 0.754
+  x = 0.1
+  y = 0.08
+  z = 0.05
   
-  pitch =  0 * pi/180
-  roll  =  pi
+  pitch =  255 * pi/180
+  roll  =  0
 
 
   # Function for Inverse Kinematics */
