@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Excel Editor</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>📊 Excel Sheet Editor</h1>
+
+    <label for="sheetSelector">Choose sheet:</label>
+    <select id="sheetSelector" onchange="loadSheet()"></select>
+
+    <div id="tableContainer">
+        <table id="excelTable"></table>
+    </div>
+
+    <script>
+        async function loadSheets() {
+            const res = await fetch("/sheets");
+            const sheets = await res.json();
+            const selector = document.getElementById("sheetSelector");
+            selector.innerHTML = "";
+            sheets.forEach(sheet => {
+                const option = document.createElement("option");
+                option.value = sheet;
+                option.textContent = sheet;
+                selector.appendChild(option);
+            });
+            loadSheet(); // Load first
+        }
+
+        async function loadSheet() {
+            const sheet = document.getElementById("sheetSelector").value;
+            const res = await fetch(`/sheet/${sheet}`);
+            const data = await res.json();
+            const table = document.getElementById("excelTable");
+            table.innerHTML = "";
+
+            data.forEach((row, rowIndex) => {
+                const tr = document.createElement("tr");
+                row.forEach((cell, colIndex) => {
+                    const td = document.createElement("td");
+                    const input = document.createElement("input");
+                    input.value = cell ?? "";
+                    input.onchange = () => updateCell(sheet, rowIndex + 1, colIndex + 1, input.value);
+                    td.appendChild(input);
+                    tr.appendChild(td);
+                });
+                table.appendChild(tr);
+            });
+        }
+
+        async function updateCell(sheet, row, col, value) {
+            await fetch("/update", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ sheet, row, col, value })
+            });
+        }
+
+        window.onload = loadSheets;
+    </script>
+</body>
+</html>

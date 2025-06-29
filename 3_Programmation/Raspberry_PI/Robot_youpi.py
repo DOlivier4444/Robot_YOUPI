@@ -6,6 +6,7 @@ import time
 import math
 
 
+# --------------------- Classes ---------------------
 ## 
 class Excel_Params :
   PROGRAM_FILE_NAME = 'programs.xlsx'
@@ -37,7 +38,6 @@ class Comms :
 
   class General(str, Enum) :
     ERROR_MOVEMENT    = 'Error movement !'
-
 
 ## Robot's parameters
 L1 = 0.28
@@ -166,11 +166,43 @@ def Program_Choice(workBook:openpyxl.Workbook) -> openpyxl.worksheet.worksheet.W
   workSheets = workBook.worksheets[choice+1] # workSheet
   print(f"Tu as choisis le programme : {workSheets}\n")
   return workSheets
-def Read_cell_value(workSheets:openpyxl.worksheet.worksheet.Worksheet, row:int, column:int) -> str | None:
+def Read_cell_value(workSheets:openpyxl.worksheet.worksheet.Worksheet, row:int, column:int) -> str | None: # careful ! --> if read none, it will return 'None' as a string... to see later
   return str(workSheets.cell(row = row, column = column).value)
+# memo
+# value of the cell             : print('The value in cell A1 is: '+ws['A1'].value)
+# nbr of row and nbr of columns : print('Total number of rows: '+str(ws.max_row)+'. And total number of columns: '+str(ws.max_column))
+# writing to a cell             : ws.cell(row=1, column=11, value = 'Sum of Sales') # selection and writing the cell
+# save the written values       : wb.save(programFileName)  # save the changes --> PERMISSION DENIED --> To see...
 
 ## Movements
 # Data treatment
+def Speed_percentage_to_us(speedPercentage:float) -> float:  
+  # Convert speed from % to robot speed
+  MAX_SPEED = 1500 # in us                      #Delay needs to be 0.0015s = 1500 microseconds at least to protect the motors // Danger for the motors if less than 1500 us, using this speed is not recommanded
+  MIN_SPEED = 6000 # in us
+
+  if speedPercentage >= 1.0 and speedPercentage <= 100.0 :
+    a = (MAX_SPEED - MIN_SPEED) / (100.0 - 1.0)
+    b = MAX_SPEED - a * 100.0
+    speedUs = a * speedPercentage + b
+    return int(speedUs) # return speed in us
+  else :
+    speedUs = 0
+    return speedUs
+def Gripper_percentage_to_step(gripperPercentage:float) -> float:
+  # 0% = 0 -- 100% = -6000
+  MAX_GRIPPER_OPENING = -6000 # in step
+  MIN_GRIPPER_OPENING = 0 # in step
+
+  if gripperPercentage >= 0.0 and gripperPercentage <= 100.0 :
+    a = (MAX_GRIPPER_OPENING - MIN_GRIPPER_OPENING) / (100.0 - 1.0)
+    b = MAX_GRIPPER_OPENING - a * 100.0
+    gripperStep = a * gripperPercentage + b
+    return int(gripperStep) # return speed in us
+  else :
+    gripperStep = 0
+    return gripperStep
+
 def Validate_Move(motorAngles:list[float]) -> int: # 0 == valid
   FORWARD   = 1
   BACKWARDS = 0
@@ -194,7 +226,7 @@ def Validate_Move(motorAngles:list[float]) -> int: # 0 == valid
     [90,  135],   # MOTOR_2
     [90,  90 ],   # MOTOR_3
     [0,   0  ],   # MOTOR_4
-    [0,   100]    # MOTOR_5 /*closed  opened*/ ( in % 0-100)
+    [0,   100]    # MOTOR_5 /*closed  opened*/ ( in % 0-100) // 0% = 0 -- 100% = -6000
   ]
 
   def Angle_calc(angle1:float, angle2:float) -> float:
@@ -353,6 +385,7 @@ def Inverse_Kinematic(DH_params:dict, X:float, Y:float, Z:float, pitch:float, ro
   motorAngles[4] = round(t5_Motor * 180 / math.pi, 3)
 
   return motorAngles
+
 def Get_Movement_Datas(workSheets:openpyxl.worksheet.worksheet.Worksheet, row_no:int) -> list[str] | None:
 
   movementMode  =  Read_cell_value(workSheets, row_no, column=1)
@@ -369,19 +402,21 @@ def Get_Movement_Datas(workSheets:openpyxl.worksheet.worksheet.Worksheet, row_no
       return None # error
 
   speed = Read_cell_value(workSheets, row_no, column=2)
-  if speed is None :
-    print(f"Erreur de lecture de la vitesse du mouvement à la ligne {row_no} : speed = {speed}")
+  speedUs = Speed_percentage_to_us(speed)
+  if speedUs is None :
+    print(f"Erreur de lecture de la vitesse du mouvement à la ligne {row_no} : speed = {speedUs}")
     return None
   
   gripperPercentage = Read_cell_value(workSheets, row_no, column=3)
-  if gripperPercentage is None :
-    print(f"Erreur de lecture du pourcentage de fermeture de la pince à la ligne {row_no} : gripperPercentage = {gripperPercentage}")
+  gripperSteps = Gripper_percentage_to_step(gripperPercentage)
+  if gripperSteps is None :
+    print(f"Erreur de lecture du pourcentage de fermeture de la pince à la ligne {row_no} : gripperPercentage = {gripperSteps}")
     return None
   
   values = []
   values.append(movementMode)
-  values.append(speed)
-  values.append(gripperPercentage)
+  values.append(speedUs)
+  values.append(gripperSteps)
  
   #print(f"start column : {startColumn} \nend column : {startColumn + nbrOfData}")
 
@@ -398,7 +433,6 @@ def Get_Movement_Datas(workSheets:openpyxl.worksheet.worksheet.Worksheet, row_no
 def Get_Program_Datas(workSheets:openpyxl.worksheet.worksheet.Worksheet) -> list[str] | int:
 
   nbrOfMovements = Read_cell_value(workSheets, row=2, column=1)
-
   if nbrOfMovements is None :
     print("Erreur de lecture du nombre de mouvements à exécuter.")
     return 0xD0
@@ -408,7 +442,6 @@ def Get_Program_Datas(workSheets:openpyxl.worksheet.worksheet.Worksheet) -> list
     print("Aucun mouvement à exécuter.")
     return 0xD2
   #sendToArduino(arduino, str(nbrOfMovements))
-
 
   mvtsJointDatas = [] # list of movements datas to send to the arduino
   rowNbr = 0
@@ -447,7 +480,6 @@ def Get_Program_Datas(workSheets:openpyxl.worksheet.worksheet.Worksheet) -> list
       motorAnglesTargets.append(mvtDatas[2]) # move the gripper percentage to the end of the list
       
       motorAnglesTargets = [float(x) for x in motorAnglesTargets]
-
 
     #print(f"mouvement récupéré ligne {Excel_Params.STARTING_ROW + rowNbr - 1} : {motorAnglesTargets}")
 
@@ -512,13 +544,6 @@ def Program_Execution(arduino:serial, workSheets:openpyxl.worksheet.worksheet.Wo
 
 
 # --------------------- Main ---------------------
-# memo
-# value of the cell         :   print('The value in cell A1 is: '+ws['A1'].value)
-# nbr of row and nbr of columns   :   print('Total number of rows: '+str(ws.max_row)+'. And total number of columns: '+str(ws.max_column))
-# writing to a cell         :   ws.cell(row=1, column=11, value = 'Sum of Sales') # selection and writing the cell
-# save the written values       :   wb.save(programFileName)  # save the changes --> PERMISSION DENIED --> To see...
-
-
 
 #from pynput.keyboard import Key, Controller #type:ignore
 

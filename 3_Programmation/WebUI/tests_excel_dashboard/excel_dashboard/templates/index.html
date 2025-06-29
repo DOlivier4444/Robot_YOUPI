@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Excel Editor</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Excel Sheet Viewer & Editor</h1>
+    <form method="get">
+        <label for="sheet">Choose sheet:</label>
+        <select name="sheet" id="sheet" onchange="this.form.submit()">
+            {% for name in sheet_names %}
+                <option value="{{ name }}" {% if name == selected_sheet %}selected{% endif %}>{{ name }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <table>
+        {% for row_idx, row in enumerate(data) %}
+        <tr>
+            {% for col_idx, cell in enumerate(row) %}
+            <td>
+                <form method="post" style="display:inline;">
+                    <input type="hidden" name="row" value="{{ row_idx }}">
+                    <input type="hidden" name="col" value="{{ col_idx }}">
+                    <input type="text" name="value" value="{{ cell }}">
+                    <button type="submit">💾</button>
+                </form>
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

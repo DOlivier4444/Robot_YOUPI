@@ -1,0 +1,44 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f8fa;
+    padding: 20px;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+#sheetSelector {
+    padding: 6px;
+    font-size: 1rem;
+}
+
+#tableContainer {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td {
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+input {
+    width: 100%;
+    padding: 4px;
+    border: none;
+    outline: none;
+    background: #eef3f8;
+}

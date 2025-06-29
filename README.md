@@ -41,6 +41,11 @@ code, research, documents, and notes about this project
 ## <ins>Hardware</ins>
 - clean & reinstall the transformator
 - facing plug :
+  - On/Off switch for RPI and ARDUINO alimentations
+  - On/Off switch Robot
   - RJ45 raspberry
-  - USB raspberry (controller, numerical keyboard, serial connexion)
-  - USB arduino (prog or serial connexion)
+  USB :
+  - 2 --> serial connexion (1 rpi, 1 ino)
+  - 1 keyboard
+  - 1 controller
+  - 1 camera ?
