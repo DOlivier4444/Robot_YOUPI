@@ -26,26 +26,18 @@ code, research, documents, and notes about this project
 ## <ins>Software</ins>
 
 ### Important
-- Send the number of movement (received as joint movements) to do to the arduino
-- Execute the movement on the arduino (nothing crasy, just a while loop...)
-- send a message 'ready to receive movement' --> handshake communication
+- Decide if I send only the joint angles to the arduino OR the number of steps OR doing other shenanigan ?
+- handshake communication ?
 
 - <ins>finish this page + wiki ?</ins>
 
 ### Later
 - Decode the IR codes from the LED remote + test to send the codes from the arduino (control the LED strip)
 - UI
-  - ..
-- Command via controller // numerical keyboard
+  - ROS 2 ?
+    - Gazebo
+    - Move it
+- Usage of the controller // numerical keyboard
 
 ## <ins>Hardware</ins>
 - clean & reinstall the transformator
-- facing plug :
-  - On/Off switch for RPI and ARDUINO alimentations
-  - On/Off switch Robot
-  - RJ45 raspberry
-  USB :
-  - 2 --> serial connexion (1 rpi, 1 ino)
-  - 1 keyboard
-  - 1 controller
-  - 1 camera ?

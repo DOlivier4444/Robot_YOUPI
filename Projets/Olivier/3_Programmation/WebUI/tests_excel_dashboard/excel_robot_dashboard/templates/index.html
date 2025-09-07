@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Robot Control Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Robot Control Dashboard</h1>
+
+        <div class="card">
+            <h2>Joint Controls</h2>
+            <form>
+                <label>Mode:</label>
+                <button type="button" onclick="toggleMode(this)">Direct</button>
+                <br><br>
+                <label>Base:</label>
+                <input type="range" min="-180" max="180" value="0" oninput="updateValue(this, 'baseOut')">
+                <output id="baseOut">0</output>°
+                <br>
+                <label>Shoulder:</label>
+                <input type="range" min="-180" max="180" value="0" oninput="updateValue(this, 'shoulderOut')">
+                <output id="shoulderOut">0</output>°
+                <br>
+                <label>Elbow:</label>
+                <input type="range" min="-180" max="180" value="0" oninput="updateValue(this, 'elbowOut')">
+                <output id="elbowOut">0</output>°
+                <br>
+                <label>Pitch Wrist:</label>
+                <input type="range" min="-180" max="180" value="0" oninput="updateValue(this, 'pitchOut')">
+                <output id="pitchOut">0</output>°
+                <br>
+                <label>Roll Wrist:</label>
+                <input type="range" min="-180" max="180" value="0" oninput="updateValue(this, 'rollOut')">
+                <output id="rollOut">0</output>°
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Excel Editor</h2>
+            <form method="post">
+                <label for="sheet">Select Sheet:</label>
+                <select name="sheet" onchange="this.form.submit()">
+                    {% for sheet in sheets %}
+                    <option value="{{ sheet }}" {% if sheet == active_sheet %}selected{% endif %}>{{ sheet }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+            <table>
+                {% for row_index, row in enumerate(data, 1) %}
+                <tr>
+                    {% for col_index, cell in enumerate(row, 1) %}
+                    <td>
+                        <form method="post" style="display:inline;">
+                            <input type="hidden" name="sheet" value="{{ active_sheet }}">
+                            <input type="hidden" name="row" value="{{ row_index }}">
+                            <input type="hidden" name="col" value="{{ col_index }}">
+                            <input type="hidden" name="update_cell" value="1">
+                            <input type="text" name="value" value="{{ cell }}">
+                        </form>
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function updateValue(slider, outputId) {
+            document.getElementById(outputId).value = slider.value;
+        }
+
+        function toggleMode(button) {
+            button.textContent = (button.textContent === "Direct") ? "Commanded" : "Direct";
+        }
+    </script>
+</body>
+</html>
